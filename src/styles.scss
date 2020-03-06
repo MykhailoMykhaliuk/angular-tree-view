@@ -1,0 +1,12 @@
+@import '~@angular/cdk/overlay-prebuilt.css';
+@import './reset.scss';
+
+body {
+  font-family: sans-serif;
+  font-size: 14px;
+}
+
+.display-flex {
+  display: flex;
+  justify-content: space-between;
+}

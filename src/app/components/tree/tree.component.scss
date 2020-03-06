@@ -1,0 +1,28 @@
+:host {
+  display: block;
+}
+
+.tree {
+  position: relative;
+  padding-left: 10px;
+
+  &__name {
+    display: inline-block;
+    padding: 5px 0;
+    cursor: pointer;
+
+    &--bold {
+      font-weight: 600;
+    }
+  }
+
+  &__child {
+    padding-left: 20px;
+  }
+
+  &__icon {
+    position: absolute;
+    top: 0;
+    left: -15px;
+  }
+}

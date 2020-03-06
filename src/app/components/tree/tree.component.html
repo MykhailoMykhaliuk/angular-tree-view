@@ -1,0 +1,31 @@
+<div *ngIf="treeNode"
+     class="tree"
+     (click)="closeMenu()"
+     (contextmenu)="closeMenu(); openMenu($event, treeNode)">
+
+  <div class="display-flex">
+    <app-expand-icon *ngIf="treeNode.children.length"
+                     class="tree__icon"
+                     [expanded]="treeNode.expanded">
+    </app-expand-icon>
+
+    <p class="tree__name"
+       [class.tree__name--bold]="treeNode.children.length"
+       (click)="toggle()">
+      {{ treeNode.data.name }}
+    </p>
+
+    <app-boundaries *ngIf="treeNode.children.length"
+                    [min]="treeNode.data.min"
+                    [max]="treeNode.data.max">
+    </app-boundaries>
+  </div>
+
+  <ng-container *ngIf="treeNode.expanded">
+    <app-tree class="tree__child"
+              *ngFor="let node of treeNode.children"
+              [treeNode]="node">
+    </app-tree>
+  </ng-container>
+
+</div>

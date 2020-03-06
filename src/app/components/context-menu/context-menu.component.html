@@ -1,0 +1,53 @@
+<div class="context-menu"
+     (click)="$event.stopPropagation()">
+
+  <div class="context-menu__form">
+    <form [formGroup]="treeNodeForm">
+      <p>Name:</p>
+
+      <div class="display-flex">
+        <input class="context-menu__input context-menu__name"
+               type="text"
+               formControlName="name">
+        <button class="context-menu__button"
+                (click)="rename()">Rename</button>
+      </div>
+
+      <p>Item Count:</p>
+      <input class="context-menu__input"
+             type="number"
+             formControlName="itemCount">
+
+      <div class="display-flex">
+        <div class="context-menu__boundary">
+          <p>Lover Bound:</p>
+          <input class="context-menu__input"
+                 type="number"
+                 formControlName="lowerBound">
+        </div>
+        <div class="context-menu__boundary">
+          <p>Upper Bound:</p>
+          <input class="context-menu__input"
+                 type="number"
+                 formControlName="upperBound">
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <div class="context-menu__item"
+       (click)="generate()">
+    Generate
+  </div>
+
+  <div class="context-menu__item"
+       (click)="add()">
+    Add
+  </div>
+
+  <div class="context-menu__item"
+       (click)="delete()">
+    Delete
+  </div>
+</div>
