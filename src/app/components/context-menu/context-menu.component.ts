@@ -1,13 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ControlNames } from '../../enums';
-import { ITreeNode, IBoundaries } from '../../interfaces';
+import { ITreeNode, IBoundaries, IAddTreeNode } from '../../interfaces';
 import { TreeNodeService } from '../../services/tree-node/tree-node.service';
-
-export interface IAddTreeNode {
-  pointerNode: ITreeNode;
-  newNode: ITreeNode;
-}
 
 @Component({
   selector: 'app-context-menu',
@@ -21,14 +16,15 @@ export class ContextMenuComponent {
   @Output() onDelete: EventEmitter<ITreeNode> = new EventEmitter<ITreeNode>();
 
   treeNodeForm = new FormGroup({
-    [ControlNames.Name]: new FormControl(''),
+    [ControlNames.Name]: new FormControl('', [Validators.required]),
     [ControlNames.ItemCount]: new FormControl('', [
+      Validators.required,
       Validators.pattern(/^(0|\-?[1-9][0-9]*)$/),
       Validators.min(1),
       Validators.max(15)
     ]),
-    [ControlNames.LowerBound]: new FormControl('', [Validators.pattern(/^(0|\-?[1-9][0-9]*)$/)]),
-    [ControlNames.UpperBound]: new FormControl('', [Validators.pattern(/^(0|\-?[1-9][0-9]*)$/)])
+    [ControlNames.LowerBound]: new FormControl('', [Validators.required, Validators.pattern(/^(0|\-?[1-9][0-9]*)$/)]),
+    [ControlNames.UpperBound]: new FormControl('', [Validators.required, Validators.pattern(/^(0|\-?[1-9][0-9]*)$/)])
   });
 
   constructor(private treeNodeService: TreeNodeService) { }

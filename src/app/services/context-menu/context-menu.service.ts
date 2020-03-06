@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { ComponentRef } from '@angular/core';
 import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { map, tap } from 'rxjs/operators';
 import { ContextMenuComponent } from '../../components/context-menu/context-menu.component';
-import { ITreeNode } from '../../interfaces';
+import { ITreeNode, IAddTreeNode } from '../../interfaces';
 import { TreeService} from '../tree/tree.service';
 import { DataFlowService } from '../data-flow/data-flow.service';
 
@@ -30,32 +30,9 @@ export class ContextMenuService {
 
     this.compRef.instance.treeNode = treeNode;
 
-    this.compRef.instance.onEdit
-      .pipe(
-        map(updatedNode => {
-          return this.treeService.getNewStateWithUpdatedNode(this.dataFlowService.getCurrentState(), updatedNode);
-        }),
-        tap(this.close.bind(this))
-      )
-      .subscribe(this.emitNewState.bind(this));
-
-    this.compRef.instance.onAdd
-      .pipe(
-        map(( { pointerNode, newNode } ) => {
-          return this.treeService.getStateWithNewNode(this.dataFlowService.getCurrentState(), pointerNode, newNode);
-        }),
-        tap(this.close.bind(this))
-      )
-      .subscribe(this.emitNewState.bind(this));
-
-    this.compRef.instance.onDelete
-      .pipe(
-        map(updatedNode => {
-          return this.treeService.getStateWithoutNode(this.dataFlowService.getCurrentState(), updatedNode);
-        }),
-        tap(this.close.bind(this))
-      )
-      .subscribe(this.emitNewState.bind(this));
+    this.observeChanges(this.compRef.instance.onEdit, this.editTreeNodeMapper.bind(this));
+    this.observeChanges(this.compRef.instance.onAdd, this.addTreeNodeMapper.bind(this));
+    this.observeChanges(this.compRef.instance.onDelete, this.deleteTreeNodeMapper.bind(this));
   }
 
   close(): void {
@@ -78,6 +55,27 @@ export class ContextMenuService {
       ]);
 
     return new OverlayConfig({ positionStrategy });
+  }
+
+  private observeChanges(source$: EventEmitter<any>, handler: Function): void {
+    source$
+      .pipe(
+        map(handler.bind(this)),
+        tap(this.close.bind(this))
+      )
+      .subscribe(this.emitNewState.bind(this));
+  }
+
+  private editTreeNodeMapper(updatedNode: ITreeNode): ITreeNode {
+    return this.treeService.getNewStateWithUpdatedNode(this.dataFlowService.getCurrentState(), updatedNode);
+  }
+
+  private addTreeNodeMapper({ pointerNode, newNode }: IAddTreeNode): ITreeNode {
+    return this.treeService.getStateWithNewNode(this.dataFlowService.getCurrentState(), pointerNode, newNode);
+  }
+
+  private deleteTreeNodeMapper(nodeToDelete: ITreeNode): ITreeNode {
+    return this.treeService.getStateWithoutNode(this.dataFlowService.getCurrentState(), nodeToDelete);
   }
 
   private emitNewState(updatedState: ITreeNode): void {

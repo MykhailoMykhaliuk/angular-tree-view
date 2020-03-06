@@ -13,3 +13,8 @@ export interface IBoundaries {
   min: number;
   max: number;
 }
+
+export interface IAddTreeNode {
+  pointerNode: ITreeNode;
+  newNode: ITreeNode;
+}

@@ -42,6 +42,7 @@
   </div>
 
   <div class="context-menu__item"
+       [class.context-menu__item--disabled]="!treeNodeForm.valid"
        (click)="add()">
     Add
   </div>
